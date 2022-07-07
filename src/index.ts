@@ -5,6 +5,7 @@ import { writeFile, readFile } from 'fs/promises';
 import { stringify } from 'csv-stringify/sync';
 import { parse } from 'csv-parse/sync';
 import path from 'path';
+import { AbortController } from 'node-abort-controller';
 
 import urls from './data';
 
@@ -63,12 +64,18 @@ interface Image {
             return false;
         return true;
     })) {
+        const controller = new AbortController();
+        const { signal } = controller;
+
         const response = await fetch(url.url, {
+            signal,
             headers: {
                 'User-Agent':
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
             }
         });
+
+        setTimeout(() => controller.abort(), 5000);
 
         if (!response.ok) throw new Error('Błąd: ' + response.status);
 
