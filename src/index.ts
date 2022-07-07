@@ -1,10 +1,12 @@
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
-import { writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import { writeFile, readFile } from 'fs/promises';
 import { stringify } from 'csv-stringify/sync';
+import { parse } from 'csv-parse/sync';
+import path from 'path';
 
 import urls from './data';
-import path from 'path';
 
 interface Image {
     pageUrl: string;
@@ -18,13 +20,49 @@ interface Image {
 }
 
 (async () => {
-    let index = 0;
+    const productsSliderImgs: Image[] = existsSync(
+        path.resolve(__dirname, '../productsSliderImgs.csv')
+    )
+        ? parse(
+              await readFile(
+                  path.resolve(__dirname, '../productsSliderImgs.csv'),
+                  'utf-8'
+              ),
+              { columns: true }
+          )
+        : [];
+    const productsDescriptionImgs: Image[] = existsSync(
+        path.resolve(__dirname, '../productsDescriptionImgs.csv')
+    )
+        ? parse(
+              await readFile(
+                  path.resolve(__dirname, '../productsDescriptionImgs.csv'),
+                  'utf-8'
+              ),
+              { columns: true }
+          )
+        : [];
+    const categoryImgs: Image[] = existsSync(
+        path.resolve(__dirname, '../categoryImgs.csv')
+    )
+        ? parse(
+              await readFile(
+                  path.resolve(__dirname, '../categoryImgs.csv'),
+                  'utf-8'
+              ),
+              { columns: true }
+          )
+        : [];
 
-    const productsSliderImgs: Image[] = [];
-    const productsDescriptionImgs: Image[] = [];
-    const categoryImgs: Image[] = [];
-
-    for (const url of urls) {
+    for (const url of urls.filter((url) => {
+        if (productsSliderImgs.find((image) => image.pageUrl === url.url))
+            return false;
+        if (productsDescriptionImgs.find((image) => image.pageUrl === url.url))
+            return false;
+        if (categoryImgs.find((image) => image.pageUrl === url.url))
+            return false;
+        return true;
+    })) {
         const response = await fetch(url.url, {
             headers: {
                 'User-Agent':
@@ -119,10 +157,7 @@ interface Image {
                 categoryImgsCSV
             );
         }
-
         await new Promise((resolve) => setTimeout(() => resolve(null), 10000));
-
-        if (index > 2) break;
-        index++;
+        console.log('Przeanalizowano: ' + url.url);
     }
 })();
