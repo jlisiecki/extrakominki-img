@@ -113,8 +113,9 @@ interface Image {
                         imageUrl: img.src,
                         pageTite: document.title,
                         pageH1:
-                            document.querySelector<HTMLHeadingElement>('h1')
-                                ?.innerText || '',
+                            document
+                                .querySelector<HTMLHeadingElement>('h1')
+                                ?.textContent?.trim() || '',
                         imageAlt: img.alt,
                         imageTitle: img.title,
                         dataImageDescription:
@@ -149,8 +150,9 @@ interface Image {
                         imageUrl: img.dataset.src || img.src,
                         pageTite: document.title,
                         pageH1:
-                            document.querySelector<HTMLHeadingElement>('h1')
-                                ?.innerText || '',
+                            document
+                                .querySelector<HTMLHeadingElement>('h1')
+                                ?.textContent?.trim() || '',
                         imageAlt: img.alt,
                         imageTitle: img.title,
                         dataImageDescription:
