@@ -70,6 +70,8 @@ interface Image {
             }
         });
 
+        if (!response.ok) throw new Error('Błąd: ' + response.status);
+
         const text = await response.text();
 
         const { document } = new JSDOM(text).window;
@@ -157,7 +159,7 @@ interface Image {
                 categoryImgsCSV
             );
         }
-        await new Promise((resolve) => setTimeout(() => resolve(null), 10000));
-        console.log('Przeanalizowano: ' + url.url);
+        await new Promise((resolve) => setTimeout(() => resolve(null), 0));
+        console.log(response.status + ' Przeanalizowano: ' + url.url);
     }
 })();
