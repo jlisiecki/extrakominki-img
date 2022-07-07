@@ -92,8 +92,9 @@ interface Image {
                         imageUrl: img.src,
                         pageTite: document.title,
                         pageH1:
-                            document.querySelector<HTMLHeadingElement>('h1')
-                                ?.textContent || '',
+                            document
+                                .querySelector<HTMLHeadingElement>('h1')
+                                ?.textContent?.trim() || '',
                         imageAlt: img.alt,
                         imageTitle: img.title,
                         dataImageDescription:
