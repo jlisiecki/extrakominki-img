@@ -93,7 +93,7 @@ interface Image {
                         pageTite: document.title,
                         pageH1:
                             document.querySelector<HTMLHeadingElement>('h1')
-                                ?.innerText || '',
+                                ?.textContent || '',
                         imageAlt: img.alt,
                         imageTitle: img.title,
                         dataImageDescription:
